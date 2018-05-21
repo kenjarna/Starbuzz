@@ -56,6 +56,10 @@ public class DrinkActivity extends Activity {
                 ImageView photo = (ImageView)findViewById(R.id.photo);
                 photo.setImageResource(photoId);
                 photo.setContentDescription(nameText);
+
+                //Populate the favorite checkbox
+                CheckBox favorite = (CheckBox)findViewById(R.id.favorite);
+                favorite.setChecked(isFavorite);
             }
             cursor.close();
             db.close();
@@ -63,6 +67,30 @@ public class DrinkActivity extends Activity {
             Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    //Update the database when the checkbox is clicked
+    public void onFavoriteClicked (View view) {
+        int drinkNo = (Integer)getIntent().getExtras().get("drinkNo");
+        CheckBox favorite = (CheckBox)findViewById(R.id.favorite);
+        ContentValues drinkValues = new ContentValues();
+        drinkValues.put("FAVORITE", favorite.isChecked());
+        SQLiteOpenHelper starbuzzDatabaseHelper =
+                new StarbuzzDatabaseHelper(DrinkActivity.this);
+        try {
+            SQLiteDatabase db = starbuzzDatabaseHelper.getWritableDatabase();
+            //update the FAVORITE column to the value of the checkbox
+            db.update("DRINK", drinkValues,
+                    "_id = ?", new String[] {Integer.toString(drinkNo)});
+            db.close();
+        } catch(SQLiteException e) {
+            Toast toast = Toast.makeText(this, "Database Unavailable",Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+
 
     }
+
+
 }
