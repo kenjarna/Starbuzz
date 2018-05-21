@@ -7,4 +7,5 @@
         <item>STORE</item>
     </string-array>
     <string name="title_activity_drink_category">Drink Category Activity</string>
+    <string name="favorite">Favorite</string>
 </resources>

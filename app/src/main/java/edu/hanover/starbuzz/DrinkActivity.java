@@ -2,7 +2,6 @@ package edu.hanover.starbuzz;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -10,6 +9,9 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View;
+import android.widget.CheckBox;
+import android.content.ContentValues;
 
 
 public class DrinkActivity extends Activity {
@@ -27,9 +29,10 @@ public class DrinkActivity extends Activity {
         //Create a cursor
         try {
             SQLiteOpenHelper starbuzzDatabaseHelper = new StarbuzzDatabaseHelper(this);
-            SQLiteDatabase db = starbuzzDatabaseHelper.getReadableDatabase();
+            //Need read/write access to the database in order to update it
+            SQLiteDatabase db = starbuzzDatabaseHelper.getWritableDatabase();
             Cursor cursor = db.query("DRINK",
-                    new String[] {"NAME", "DESCRIPTION", "IMAGE_RESOURCE_ID"},
+                    new String[] {"NAME", "DESCRIPTION", "IMAGE_RESOURCE_ID", "FAVORITE"},
                     "_id = ?",
                     new String[] {Integer.toString(drinkNo)},
                     null, null, null);
@@ -39,6 +42,7 @@ public class DrinkActivity extends Activity {
                 String nameText = cursor.getString(0);
                 String descriptionText = cursor.getString(1);
                 int photoId = cursor.getInt(2);
+                boolean isFavorite = (cursor.getInt(3) == 1);
 
                 //Populate the drink name
                 TextView name = (TextView)findViewById(R.id.name);
